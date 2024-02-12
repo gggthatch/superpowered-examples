@@ -5,8 +5,8 @@ import base64
 # Function to get chat response
 def get_chat_response(user_input):
     # Define API key and secret
-    api_key_id = "INSERT_API_KEY_ID_HERE"
-    api_key_secret = "INSERT_API_KEY_SECRET_HERE"
+    api_key_id = "client_0708c5956739ab6aac20d009f22126cb"
+    api_key_secret = "IyTQUMiURS_y6f0CILNboHfryq_MvIggw4nH6ECelF0"
     
     # Encode credentials
     authToken = base64.b64encode(f"{api_key_id}:{api_key_secret}".encode("utf-8")).decode("utf-8")
