@@ -1,33 +1,47 @@
-# Step 1: Import necessary libraries
 import streamlit as st
-import superpowered
-import os
+import requests
+import base64
 
-# Step 2: Set up API keys (These should ideally be environment variables or securely stored)
-os.environ["SUPERPOWERED_API_KEY_ID"] = "client_0708c5956739ab6aac20d009f22126cb"
-os.environ["SUPERPOWERED_API_KEY_SECRET"] = "IyTQUMiURS_y6f0CILNboHfryq_MvIggw4nH6ECelF0"
+# Function to get chat response
+def get_chat_response(user_input):
+    # Define API key and secret
+    api_key_id = "INSERT_API_KEY_ID_HERE"
+    api_key_secret = "INSERT_API_KEY_SECRET_HERE"
+    
+    # Encode credentials
+    authToken = base64.b64encode(f"{api_key_id}:{api_key_secret}".encode("utf-8")).decode("utf-8")
+    
+    # Define the payload
+    payload = {
+        "input": user_input,
+    }
+    
+    # Make the request
+    response = requests.post(
+        "https://api.superpowered.ai/v1/chat/threads/d2b42bd6-5adf-4261-9f8f-e013eb29e342/get_response",
+        headers={"Authorization": f"Bearer {authToken}"},
+        json=payload
+    )
+    
+    # Check if the request was successful
+    if response.status_code == 200:
+        return response.json()["interaction"]["model_response"]["content"]
+    else:
+        return "Error: Unable to get response from the API."
 
 # Initialize Streamlit app
 def main():
     st.title("Chat with Our LLM")
-
-    # Step 3: Create a form for input
+    
+    # Create a form for input
     with st.form("chat_form"):
         user_input = st.text_input("Type your message here")
         submit_button = st.form_submit_button("Send")
-
+    
+    # Get and display response
     if submit_button and user_input:
-        # Step 4: Make the request and get the response
-        response = superpowered.get_chat_response(
-            thread_id="d2b42bd6-5adf-4261-9f8f-e013eb29e342",
-            input=user_input,
-        )
-        
-        # Step 5: Display the response
-        if response and 'interaction' in response and 'model_response' in response['interaction']:
-            st.write(response["interaction"]["model_response"]["content"])
-        else:
-            st.write("There was an error processing your request.")
+        chat_response = get_chat_response(user_input)
+        st.write(chat_response)
 
 if __name__ == "__main__":
     main()
