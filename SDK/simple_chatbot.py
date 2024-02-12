@@ -1,3 +1,5 @@
+import superpowered-sdk
+
 from superpowered import create_chat_thread, get_chat_response
 
 """
