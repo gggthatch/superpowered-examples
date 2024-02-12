@@ -9,7 +9,7 @@ To run this example, you need to already have a knowledge base created, which yo
 """
 
 # set parameters
-kb_id = 'YOUR_KB_ID'
+kb_id = '47a3f8ed-759b-437a-b755-15450b74347d'
 use_rse = True
 segment_length = "medium"
 system_message = "You are a friendly chatbot." # The more detailed the system message, the better. This is just a placeholder.
