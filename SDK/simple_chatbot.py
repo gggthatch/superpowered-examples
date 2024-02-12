@@ -1,34 +1,33 @@
-import superpowered-sdk
+# Step 1: Import necessary libraries
+import streamlit as st
+import superpowered
+import os
 
-from superpowered import create_chat_thread, get_chat_response
+# Step 2: Set up API keys (These should ideally be environment variables or securely stored)
+os.environ["SUPERPOWERED_API_KEY_ID"] = "client_0708c5956739ab6aac20d009f22126cb"
+os.environ["SUPERPOWERED_API_KEY_SECRET"] = "IyTQUMiURS_y6f0CILNboHfryq_MvIggw4nH6ECelF0"
 
-"""
-This example shows how to create a chat thread and get a response from the AI, using the Chat endpoint in the Superpowered API.
+# Initialize Streamlit app
+def main():
+    st.title("Chat with Our LLM")
 
-Be sure you install the Superpowered AI Python package first: pip install superpowered-sdk
+    # Step 3: Create a form for input
+    with st.form("chat_form"):
+        user_input = st.text_input("Type your message here")
+        submit_button = st.form_submit_button("Send")
 
-To run this example, you need to already have a knowledge base created, which you can do in the Superpowered AI UI (https://superpowered.ai) or via API/SDK.
-"""
+    if submit_button and user_input:
+        # Step 4: Make the request and get the response
+        response = superpowered.get_chat_response(
+            thread_id="d2b42bd6-5adf-4261-9f8f-e013eb29e342",
+            input=user_input,
+        )
+        
+        # Step 5: Display the response
+        if response and 'interaction' in response and 'model_response' in response['interaction']:
+            st.write(response["interaction"]["model_response"]["content"])
+        else:
+            st.write("There was an error processing your request.")
 
-# set parameters
-kb_id = '47a3f8ed-759b-437a-b755-15450b74347d'
-use_rse = True
-segment_length = "medium"
-system_message = "You are a friendly chatbot." # The more detailed the system message, the better. This is just a placeholder.
-
-# create chat thread
-chat_thread = create_chat_thread(knowledge_base_ids=[kb_id], use_rse=use_rse, segment_length=segment_length, system_message=system_message)
-chat_thread_id = chat_thread['id']
-print (f"Chat thread created with ID: {chat_thread_id}")
-
-# start chat loop - type 'exit' to quit
-while True:
-    # get user message
-    user_message = input("\nUser: ")
-    if user_message == "exit":
-        break
-
-    # get AI response
-    chat_response = get_chat_response(chat_thread_id, user_message)
-    chat_response = chat_response["interaction"]["model_response"]["content"]
-    print (f"\nAssistant: {chat_response}")
+if __name__ == "__main__":
+    main()
